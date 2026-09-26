@@ -51,3 +51,11 @@ jobs:
           JRELEASER_MAVENCENTRAL_NREPL4J_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
           JRELEASER_MAVENCENTRAL_NREPL4J_SPRING_BOOT_STARTER_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
           JRELEASER_MAVENCENTRAL_NREPL4J_SPRING_BOOT_STARTER_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+
+      - name: Upload JReleaser logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jreleaser-logs
+          path: out/jreleaser/trace.log
+          if-no-files-found: warn
