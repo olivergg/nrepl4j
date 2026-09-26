@@ -17,10 +17,15 @@ signing:
 deploy:
   maven:
     mavenCentral:
-      sonatype:
+      nrepl4j:
         active: RELEASE
         url: https://central.sonatype.com/api/v1/publisher
         applyMavenCentralRules: true
         stagingRepositories:
           - .staging-deploy
+      nrepl4j-spring-boot-starter:
+        active: RELEASE
+        url: https://central.sonatype.com/api/v1/publisher
+        applyMavenCentralRules: true
+        stagingRepositories:
           - spring-boot-starter/.staging-deploy
