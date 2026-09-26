@@ -15,7 +15,7 @@ jobs:
           distribution: temurin
           java-version: "17"
           gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          gpg-passphrase: JRELEASER_GPG_PASSPHRASE
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Derive release version from tag
         run: echo "RELEASE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
@@ -30,32 +30,17 @@ jobs:
       - name: Install nrepl4j locally (dependency of the starter)
         run: mvn -s .mvn/settings.xml -B clean install
 
-      - name: Stage nrepl4j
-        run: mvn -s .mvn/settings.xml -B -Prelease deploy
-
-      - name: Stage nrepl4j-spring-boot-starter
-        working-directory: spring-boot-starter
-        run: mvn -s ../.mvn/settings.xml -B -Prelease clean deploy
-
-      - name: Publish to Maven Central via JReleaser
-        uses: jreleaser/release-action@v2
-        with:
-          arguments: deploy
+      - name: Publish nrepl4j to Maven Central
         env:
-          JRELEASER_PROJECT_VERSION: ${{ env.RELEASE_VERSION }}
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
-          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
-          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          JRELEASER_MAVENCENTRAL_NREPL4J_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
-          JRELEASER_MAVENCENTRAL_NREPL4J_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
-          JRELEASER_MAVENCENTRAL_NREPL4J_SPRING_BOOT_STARTER_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
-          JRELEASER_MAVENCENTRAL_NREPL4J_SPRING_BOOT_STARTER_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+          CENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+        run: mvn -s .mvn/settings.xml -B -Prelease -Dgpg.passphrase="$MAVEN_GPG_PASSPHRASE" deploy
 
-      - name: Upload JReleaser logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jreleaser-logs
-          path: out/jreleaser/trace.log
-          if-no-files-found: warn
+      - name: Publish nrepl4j-spring-boot-starter to Maven Central
+        working-directory: spring-boot-starter
+        env:
+          CENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+        run: mvn -s ../.mvn/settings.xml -B -Prelease -Dgpg.passphrase="$MAVEN_GPG_PASSPHRASE" clean deploy

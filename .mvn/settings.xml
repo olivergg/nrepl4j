@@ -30,4 +30,13 @@
       </repositories>
     </profile>
   </profiles>
+
+  <!-- id must match <publishingServerId> in the release profile's central-publishing-maven-plugin config. -->
+  <servers>
+    <server>
+      <id>central</id>
+      <username>${env.CENTRAL_USERNAME}</username>
+      <password>${env.CENTRAL_PASSWORD}</password>
+    </server>
+  </servers>
 </settings>
