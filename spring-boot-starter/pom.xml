@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.olivergg</groupId>
+  <artifactId>nrepl4j-spring-boot-starter</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>nrepl4j-spring-boot-starter</name>
+  <description>Zero-code Spring Boot auto-configuration for nrepl4j.</description>
+  <url>https://github.com/olivergg/nrepl4j</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>olivergg</id>
+      <url>https://github.com/olivergg</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/olivergg/nrepl4j.git</connection>
+    <developerConnection>scm:git:git@github.com:olivergg/nrepl4j.git</developerConnection>
+    <url>https://github.com/olivergg/nrepl4j</url>
+  </scm>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>3.5.14</spring-boot.version>
+    <nrepl4j.version>1.0.0-SNAPSHOT</nrepl4j.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.olivergg</groupId>
+      <artifactId>nrepl4j</artifactId>
+      <version>${nrepl4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <!-- Stages the release build to a local dir instead of a remote repo; JReleaser deploys from there. -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.10.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
+        <repository>
+          <id>local-staging</id>
+          <url>file://${project.basedir}/.staging-deploy</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
+</project>

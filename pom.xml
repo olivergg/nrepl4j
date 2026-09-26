@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.olivergg</groupId>
+  <artifactId>nrepl4j</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>nrepl4j</name>
+  <description>Embed a Clojure nREPL server in any JVM app for live runtime inspection.</description>
+  <url>https://github.com/olivergg/nrepl4j</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>olivergg</id>
+      <url>https://github.com/olivergg</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/olivergg/nrepl4j.git</connection>
+    <developerConnection>scm:git:git@github.com:olivergg/nrepl4j.git</developerConnection>
+    <url>https://github.com/olivergg/nrepl4j</url>
+  </scm>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <clojure.version>1.12.6</clojure.version>
+    <nrepl.version>1.7.0</nrepl.version>
+    <junit.version>5.10.2</junit.version>
+  </properties>
+
+  <repositories>
+    <!-- nrepl:nrepl is published to Clojars, not Maven Central. -->
+    <repository>
+      <id>clojars</id>
+      <url>https://repo.clojars.org/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure</artifactId>
+      <version>${clojure.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>nrepl</groupId>
+      <artifactId>nrepl</artifactId>
+      <version>${nrepl.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <!-- Stages the release build to a local dir instead of a remote repo; JReleaser deploys from there. -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.10.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
+        <repository>
+          <id>local-staging</id>
+          <url>file://${project.basedir}/.staging-deploy</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
+</project>

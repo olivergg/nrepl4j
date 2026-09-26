@@ -1,0 +1,26 @@
+project:
+  name: nrepl4j
+  description: Embed a Clojure nREPL server in any JVM app for live runtime inspection.
+  links:
+    homepage: https://github.com/olivergg/nrepl4j
+  license: MIT
+  authors:
+    - olivergg
+  java:
+    groupId: io.github.olivergg
+    version: 17
+
+signing:
+  active: ALWAYS
+  armored: true
+
+deploy:
+  maven:
+    mavenCentral:
+      sonatype:
+        active: RELEASE
+        url: https://central.sonatype.com/api/v1/publisher
+        applyMavenCentralRules: true
+        stagingRepositories:
+          - .staging-deploy
+          - spring-boot-starter/.staging-deploy

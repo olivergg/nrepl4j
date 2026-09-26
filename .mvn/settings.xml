@@ -1,0 +1,14 @@
+<!--
+  Project-local Maven settings for nrepl4j (public release builds).
+
+  Deliberately isolated from ~/.m2/settings.xml, which carries an active-by-default
+  corporate profile (CodeArtifact) that overrides distributionManagement via
+  altSnapshotDeploymentRepository/altDeploymentRepository properties - that would
+  silently redirect this public library's releases to a private company repo.
+
+  Always build this project with: mvn -s .mvn/settings.xml ...
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+</settings>
