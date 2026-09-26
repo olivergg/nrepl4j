@@ -1,5 +1,9 @@
 # 🔌 nrepl4j
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j?label=nrepl4j)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j-spring-boot-starter?label=spring-boot-starter)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j-spring-boot-starter)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Embeds a Clojure nREPL server in a Java process. Clojure is just a jar — this works in **any** JVM app (plain `main`, Spring Boot, Quarkus, legacy WAR...); Spring/CDI bean lookup are optional add-ons, not a requirement.
 
 Connect to it and you get live access to the running app: inspect any object, patch private state, call any method, hot-fix a bug — no redeploy.
@@ -31,7 +35,7 @@ nREPL has **no authentication** — anyone who can reach the port gets arbitrary
 <dependency>
   <groupId>io.github.olivergg</groupId>
   <artifactId>nrepl4j</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -84,7 +88,7 @@ For Spring Boot, skip all of the above — add the starter and it auto-configure
 <dependency>
   <groupId>io.github.olivergg</groupId>
   <artifactId>nrepl4j-spring-boot-starter</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
