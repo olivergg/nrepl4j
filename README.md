@@ -18,6 +18,16 @@ nREPL has **no authentication** — anyone who can reach the port gets arbitrary
 ## 📦 Install
 
 ```xml
+<repositories>
+  <!-- nrepl:nrepl (the transitive nREPL server implementation) is only published to
+       Clojars, not Maven Central - Central's publishing rules forbid a <repositories>
+       block in a published POM, so this repo must be added by consumers. -->
+  <repository>
+    <id>clojars</id>
+    <url>https://repo.clojars.org/</url>
+  </repository>
+</repositories>
+
 <dependency>
   <groupId>io.github.olivergg</groupId>
   <artifactId>nrepl4j</artifactId>

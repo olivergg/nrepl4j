@@ -7,8 +7,27 @@
   silently redirect this public library's releases to a private company repo.
 
   Always build this project with: mvn -s .mvn/settings.xml ...
+
+  Declares Clojars here rather than in pom.xml: nrepl:nrepl is only published to
+  Clojars, and Maven Central's publishing rules forbid a <repositories> block in a
+  published POM (PomChecker rejects it). Consumers of the published artifact must add
+  the same repository themselves - see README.
 -->
 <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+  <profiles>
+    <profile>
+      <id>clojars</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>clojars</id>
+          <url>https://repo.clojars.org/</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
 </settings>

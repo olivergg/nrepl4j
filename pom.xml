@@ -40,14 +40,6 @@
     <junit.version>5.10.2</junit.version>
   </properties>
 
-  <repositories>
-    <!-- nrepl:nrepl is published to Clojars, not Maven Central. -->
-    <repository>
-      <id>clojars</id>
-      <url>https://repo.clojars.org/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>
