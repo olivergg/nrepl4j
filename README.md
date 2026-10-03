@@ -1,31 +1,27 @@
-# 🔌 nrepl4j
+# nrepl4j
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j?label=nrepl4j)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j-spring-boot-starter?label=spring-boot-starter)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j-spring-boot-starter)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Embeds a Clojure nREPL server in a Java process. Clojure is just a jar — this works in **any** JVM app (plain `main`, Spring Boot, Quarkus, legacy WAR...); Spring/CDI bean lookup are optional add-ons, not a requirement.
+Embed a Clojure nREPL server in a Java process.
 
-Connect to it and you get live access to the running app: inspect any object, patch private state, call any method, hot-fix a bug — no redeploy.
+Clojure is just a jar, so this works in any JVM app: plain `main`, Spring Boot, Quarkus, an old WAR. Spring and CDI bean lookup are optional extras.
 
-## 🔒 Security
+Once connected from your editor, you can poke at the running app: inspect objects, read or patch private state, call methods, hot-fix a bug without redeploying.
 
-nREPL has **no authentication** — anyone who can reach the port gets arbitrary code execution as your JVM process.
+## Security
 
-| Bind to | Safe? | Why |
-|---|---|---|
-| `127.0.0.1` / `::1` | ✅ | loopback only, same machine |
-| `0.0.0.0` / `::` / `::0` | ❌ | **every** network interface, IPv4 and IPv6 wildcards alike |
+nREPL has no authentication. Anyone who can reach the port can run arbitrary code in your JVM.
 
-`NReplServerOptions.defaults()` already binds to `127.0.0.1`. `NReplServer.start` logs a warning to stderr if you override it to a wildcard bind — don't unless you have your own network-level protection (firewall, VPN-only host, SSH tunnel...).
+The default bind is `127.0.0.1`, which is what you want. `NReplServer.start` prints a warning to stderr if you bind to a wildcard address (`0.0.0.0`, `::`). Only do that if something else protects the port (firewall, VPN-only host, SSH tunnel).
 
-## 📦 Install
+## Install
 
 ```xml
 <repositories>
-  <!-- nrepl:nrepl (the transitive nREPL server implementation) is only published to
-       Clojars, not Maven Central - Central's publishing rules forbid a <repositories>
-       block in a published POM, so this repo must be added by consumers. -->
+  <!-- nrepl:nrepl is only published on Clojars, and Central doesn't allow
+       <repositories> in published POMs, so you need to add it yourself. -->
   <repository>
     <id>clojars</id>
     <url>https://repo.clojars.org/</url>
@@ -39,9 +35,9 @@ nREPL has **no authentication** — anyone who can reach the port gets arbitrary
 </dependency>
 ```
 
-Requires **Java 17+**. Ships Clojure `1.12.6` + nREPL `1.7.0`.
+Java 17+. Ships with Clojure 1.12.6 and nREPL 1.7.0.
 
-## 🚀 Quick start
+## Usage
 
 ```java
 try (NReplServer server = NReplServer.start(NReplServerOptions.defaults())) {
@@ -49,14 +45,14 @@ try (NReplServer server = NReplServer.start(NReplServerOptions.defaults())) {
 }
 ```
 
-## ⚙️ Options
+### Options
 
-| Field | Default | Purpose |
+| Field | Default | |
 |---|---|---|
 | `startPort` / `endPort` | `5555` / `6666` | port scan range |
 | `bind` | `127.0.0.1` | interface to bind |
-| `classpathResourcesToLoad` | `[]` | `.clj` files to load at startup |
-| `bindings` | `{}` | objects published to [`NReplContext`](#-nreplcontext) before those files load |
+| `classpathResourcesToLoad` | `[]` | `.clj` files loaded at startup |
+| `bindings` | `{}` | objects put in [`NReplContext`](#nreplcontext) before those files load |
 
 ```java
 NReplServerOptions.defaults()
@@ -64,25 +60,25 @@ NReplServerOptions.defaults()
     .withBindings(Map.of("applicationContext", ctx));
 ```
 
-## 🧰 Bundled helpers (`clojure/*.clj`)
+### Bundled helpers
 
-| File | Load when | Provides |
+| File | When | Provides |
 |---|---|---|
-| `helpers.clj` | always | `private-field`, `get-field-val`, `set-field-val!`, `call-method`, `unproxy`, `to-map`, `thread-dump`, `clearns` |
-| `spring.clj` | Spring on classpath | `get-bean` via `NReplContext` (needs `applicationContext` binding) |
-| `cdi.clj` | CDI container (Weld/Quarkus) | `get-bean` via `CDI.current()` (no binding needed) |
+| `clojure/helpers.clj` | always | `private-field`, `get-field-val`, `set-field-val!`, `call-method`, `unproxy`, `to-map`, `thread-dump`, `clearns` |
+| `clojure/spring.clj` | Spring | `get-bean`, needs an `applicationContext` binding |
+| `clojure/cdi.clj` | CDI (Weld, Quarkus) | `get-bean` via `CDI.current()` |
 
-## 🗄️ NReplContext
+### NReplContext
 
-Static registry an app publishes objects into so classpath-loaded helpers can read them back — needed for Spring (embedded Boot has no static context holder), not for CDI (`CDI.current()` is already global).
+A static map the app can publish objects into, so `.clj` helpers can find them. Spring needs it (embedded Boot has no static context holder); CDI doesn't, `CDI.current()` is already global.
 
 ```java
-NReplContext.put("applicationContext", applicationContext); // or via .withBindings(...)
+NReplContext.put("applicationContext", applicationContext); // or .withBindings(...)
 ```
 
-## 🌱 Spring Boot starter (zero code)
+## Spring Boot starter
 
-For Spring Boot, skip all of the above — add the starter and it auto-configures itself:
+With Spring Boot you can skip the above and just add the starter:
 
 ```xml
 <dependency>
@@ -92,31 +88,36 @@ For Spring Boot, skip all of the above — add the starter and it auto-configure
 </dependency>
 ```
 
-| Property (`clojure.nrepl.*`) | Default | Purpose |
+| Property (`clojure.nrepl.*`) | Default | |
 |---|---|---|
-| `enabled` | `true` | set `false` to disable entirely |
+| `enabled` | `true` | |
 | `start-port` / `end-port` | `5555` / `6666` | port scan range |
 | `bind` | `127.0.0.1` | interface to bind |
-| `extra-resources` | `[]` | extra `.clj` files, loaded after `helpers.clj` + `spring.clj` |
+| `extra-resources` | `[]` | extra `.clj` files, loaded after `helpers.clj` and `spring.clj` |
 
-## 🖥️ Framework integration
+## Other frameworks
 
-Any framework works — these are just the ones with a bean-lookup helper included:
+- Plain Java: start the server anywhere in `main`.
+- Spring without the starter: `ApplicationContextAware` + `@PreDestroy`, and pass the `applicationContext` binding.
+- Quarkus / CDI: `@Observes StartupEvent` / `ShutdownEvent`, no binding needed.
 
-| Framework | Hook | Binding needed? |
-|---|---|---|
-| Plain Java | anywhere in `main` | ❌ |
-| Spring Boot | [starter](#-spring-boot-starter-zero-code) above, or `ApplicationContextAware` + `@PreDestroy` | ✅ `applicationContext` |
-| Quarkus / CDI | `@Observes StartupEvent` / `ShutdownEvent` | ❌ |
+Working examples: [`examples/spring-boot-nrepl-demo`](examples/spring-boot-nrepl-demo) (starter) and [`examples/quarkus-nrepl-demo`](examples/quarkus-nrepl-demo).
 
-Full working examples: [`examples/spring-boot-nrepl-demo`](examples/spring-boot-nrepl-demo) (using the starter) and [`examples/quarkus-nrepl-demo`](examples/quarkus-nrepl-demo).
-
-## 🧪 Test
+## Build
 
 ```bash
 mvn test
 ```
 
-## 📄 License
+## Credits
+
+nrepl4j is a thin wrapper; the real work is done by:
+
+- [Clojure](https://clojure.org/), by Rich Hickey and the Clojure core team
+- [nREPL](https://nrepl.org/), created by Chas Emerick, maintained by Bozhidar Batsov and contributors
+- [Clojars](https://clojars.org/), which hosts nREPL and much of the Clojure ecosystem
+- [CIDER](https://cider.mx/), [Calva](https://calva.io/), [Cursive](https://cursive-ide.com/) and the other nREPL clients that make connecting to this useful
+
+## License
 
 [MIT](LICENSE)
