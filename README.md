@@ -12,6 +12,9 @@ Once connected from your editor, you can poke at the running app: inspect object
 
 ## Security
 
+> [!CAUTION]
+> Running an nREPL in production means a remote shell into your live app. Anyone who gets to it can read data, change state, or take the process down. If you enable it in prod, keep it on loopback, restrict who can reach the host, and consider turning it off (`clojure.nrepl.enabled=false`) when you don't need it.
+
 nREPL has no authentication. Anyone who can reach the port can run arbitrary code in your JVM.
 
 The default bind is `127.0.0.1`, which is what you want. `NReplServer.start` prints a warning to stderr if you bind to a wildcard address (`0.0.0.0`, `::`). Only do that if something else protects the port (firewall, VPN-only host, SSH tunnel).
