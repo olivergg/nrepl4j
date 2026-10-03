@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j?label=nrepl4j)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.olivergg/nrepl4j-spring-boot-starter?label=spring-boot-starter)](https://central.sonatype.com/artifact/io.github.olivergg/nrepl4j-spring-boot-starter)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![AI-assisted](https://img.shields.io/badge/AI--assisted-LLM-blueviolet)](#ai-disclosure)
 
 Embed a Clojure nREPL server in a Java process.
 
@@ -120,6 +121,10 @@ nrepl4j is a thin wrapper; the real work is done by:
 - [nREPL](https://nrepl.org/), created by Chas Emerick, maintained by Bozhidar Batsov and contributors
 - [Clojars](https://clojars.org/), which hosts nREPL and much of the Clojure ecosystem
 - [CIDER](https://cider.mx/), [Calva](https://calva.io/), [Cursive](https://cursive-ide.com/) and the other nREPL clients that make connecting to this useful
+
+## AI disclosure
+
+Large parts of this code were written with an LLM agent, then reviewed and tested by me.
 
 ## License
 
